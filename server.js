@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000;
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
 app.use('/', require('./routes/index.js'));
+app.use('/api/v1', require('./routes/api.js'));
 
 
 app.listen(port, () => {

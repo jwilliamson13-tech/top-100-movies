@@ -18,6 +18,7 @@
   "homepage": "https://github.com/jwilliamson13-tech/top-100-movies#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "circular-json": "^0.5.9",
     "express": "^4.17.1",
     "express-openid-connect": "^2.5.0",
     "nodemon": "^2.0.12"
