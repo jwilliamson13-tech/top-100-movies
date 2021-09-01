@@ -46,6 +46,7 @@ class userDAO{
     const currentMovies = User.findById(userId).favorite_movies ? currentMovies : [];
     var newMoviesList = currentMovies;
 
+    const user = User.findById(userId).exec();
     //Check if new movies are not in movies list
     moviesList.forEach((movie) =>{
       if(!currentMovies.includes(movie)){
@@ -54,10 +55,15 @@ class userDAO{
     })
     console.log(newMoviesList);
     //Update user object
-    const updateUser = await User.findOneAndUpdate({_id:userId},{favorite_movies:newMoviesList},{new:true});
+    try{
+      const updateUser = User.findOneAndUpdate({"_id":userId},{'$set': {"favorite_movies":newMoviesList}},{'new':true}).exec();
 
-    //Return success based on update
-    updateUser ? return true : return false;
+      console.log(updateUser);
+      //Return success based on update
+      return updateUser;
+    } catch(e){
+      console.error("Error updating user's movies: ", e);
+    }
   }
 
   //Remove movies from user

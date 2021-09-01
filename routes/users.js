@@ -54,6 +54,7 @@ router.post('/movies', jsonParser, async (req,res) =>{
   const movies = req.body.movies;
 
   const updated = await userDAO.addMovies(userId,movies);
+  console.log(updated);
 
   if(updated){
     res.send({"status":"success"});
