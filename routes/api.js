@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const tmdbDAO = require("../dao/tmdbDAO.js");
 
+
 //Get movies based on search query
 router.get('/movies', async (req,res) => {
   //Pull this out and do checks on query
@@ -14,23 +15,27 @@ router.get('/movies', async (req,res) => {
 
   const page = req.query.page ? req.query.page : 1;
 
-  const name = req.query.name;
+  const name = req.query.name ? req.query.name : false;
 
-  try{
-    //Get the movies from the DAO
-    var movies = await tmdbDAO.getMovies(name,page);
-    console.log(movies);
+  if(!name){
+    res.send({"error":"No Movie name selected."});
+  }
+  else{
+    try{
+      //Get the movies from the DAO
+      var movies = await tmdbDAO.getMovies(name,page);
+      console.log(movies);
 
-    //Check if pages exceed the maximum
-    if(page > movies.data.total_pages){
-      movies = await tmdbDAO.getMovies(name,1);
+      //Check if pages exceed the maximum
+      if(page > movies.data.total_pages){
+        movies = await tmdbDAO.getMovies(name,1);
+      }
+
+      res.send(circularJSON.stringify(movies));
+    } catch(e){
+      console.error("Could not get movies from TMDBDAO: ", e);
     }
-
-    res.send(circularJSON.stringify(movies));
-  } catch(e){
-    console.error("Could not get movies from TMDBDAO: ", e);
   }
 });
-
 
 module.exports = router;
