@@ -5,6 +5,13 @@ const express = require('express');
 const router = express.Router();
 const userDAO = require("../dao/userDAO.js");
 const User = require("../models/User");
+const bodyParser = require('body-parser');
+
+// create application/json parser
+var jsonParser = bodyParser.json()
+
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.get('/', async (req,res) =>{
   const users = await userDAO.getAllUsers();
@@ -38,21 +45,23 @@ router.delete('/:id', async (req,res) =>{
 });
 
 //Add movies to user
-router.post('/movies', async (req,res) =>{
+router.post('/movies', jsonParser, async (req,res) =>{
   //Check if user doing this is the one searching
-
+  console.log(req.body);
   //Get user ID
-
+  const userId = req.body.user;
   //Get movies (ObjectId)
-  const userId = req.params.id;
+  const movies = req.body.movies;
 
-  const deleted = userDAO.deleteUser(userId);
-  if(deleted){
-    res.json({"status": "success"});
+  const updated = await userDAO.addMovies(userId,movies);
+
+  if(updated){
+    res.send({"status":"success"});
   }
   else{
-    res.status(500).send({"error":"Error deleting user"});
+    res.status(500).send({"error":"Error adding movies to favorite movies list"});
   }
+
 });
 
 //Remove movies from user
