@@ -6,6 +6,7 @@ import Footer from "./components/footer";
 import Dashboard from "./components/dashboard";
 import Movies from "./components/movies";
 import Profiles from "./components/profiles";
+import Profile from "./components/profile";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route exact path="/" component={Dashboard}/>
         <Route exact path="/movies" component={Movies}/>
         <Route exact path="/profiles" component={Profiles}/>
+        <Route exact path="/profile" component={Profile}/>
       </Switch>
       <Footer/>
     </div>

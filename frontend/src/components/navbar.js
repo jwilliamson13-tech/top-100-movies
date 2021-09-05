@@ -10,7 +10,7 @@ const Navbar = props => {
             <a className="nav-link" href="/movies">Movies</a>
         </li>
         <li className="nav-item">
-            <a className="nav-link" href="/users">Profiles</a>
+            <a className="nav-link" href="/profiles">Profiles</a>
         </li>
         <li className="nav-item">
           <a className="nav-link" href="/login">Login</a>

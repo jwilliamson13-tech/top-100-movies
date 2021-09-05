@@ -1,8 +1,34 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
-import MovieCard from "../components/movieCard"
+import MovieCard from "../components/movieCard";
+import MoviesDataService from "../services/moviesDataService";
 
 const Movies = props => {
+
+
+  const [movies, setMovies] = useState([]);
+  const [searchName, setSearchName ] = useState("");
+  /*
+  useEffect(()=>{
+      retrieveMovies();
+    }, []);
+    */
+
+  const onChangeSearchName = e => {
+      const searchName = e.target.value;
+      setSearchName(searchName);
+  };
+
+  const retrieveMovies = (searchName) => {
+      console.log(searchName);
+      MoviesDataService.getMovies(searchName)
+      .then(response => {
+        console.log(response.data);
+        setMovies(response.data.results); //Gonna have to change this to match data received
+      })
+    };
+
+
   return (
     <div className="container pr-5 pl-5">
       <h1 className="text-center">MOVIES GO HERE</h1>
@@ -12,11 +38,14 @@ const Movies = props => {
             type="text"
             className="form-control"
             placeholder="Search by name"
+            value={searchName}
+            onChange={onChangeSearchName}
           />
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
               type="button"
+              onClick={retrieveMovies(searchName)}
               //Need to add on click event and state event here
             >
               Search
@@ -25,14 +54,9 @@ const Movies = props => {
         </div>
       </div>
       <div className="card-group pt-3 pb-3">
-          <MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.3hjDZEpqqvZeK_oVfbkh-gHaMx%26pid%3DApi&f=1"}}/>
-          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmovieposters2.com%2Fimages%2F655616-b.jpg&f=1&nofb=1"}}/>
-          <MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.3hjDZEpqqvZeK_oVfbkh-gHaMx%26pid%3DApi&f=1"}}/>
-          <MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.3hjDZEpqqvZeK_oVfbkh-gHaMx%26pid%3DApi&f=1"}}/>
-          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmovieposters2.com%2Fimages%2F655616-b.jpg&f=1&nofb=1"}}/>
-          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmovieposters2.com%2Fimages%2F655616-b.jpg&f=1&nofb=1"}}/>
-          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmovieposters2.com%2Fimages%2F655616-b.jpg&f=1&nofb=1"}}/>
-          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmovieposters2.com%2Fimages%2F655616-b.jpg&f=1&nofb=1"}}/>
+          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/fXm3YKXAEjx7d2tIWDg9TfRZtsU.jpg"}}/>
+          <MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://image.tmdb.org/t/p/w185/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg"}}/>
+          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/xj3jhyq3ZsfdVn79kXC1XKFVQlv.jpg"}}/>
       </div>
     </div>
   );
