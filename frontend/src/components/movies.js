@@ -23,8 +23,9 @@ const Movies = props => {
       console.log(searchName);
       MoviesDataService.getMovies(searchName)
       .then(response => {
-        console.log(response.data);
-        setMovies(response.data.results); //Gonna have to change this to match data received
+        console.log(response.data.data.results);
+        setMovies(response.data.data.results); //Gonna have to change this to match data received
+        console.log(movies);
       })
     };
 
@@ -45,7 +46,7 @@ const Movies = props => {
             <button
               className="btn btn-outline-secondary"
               type="button"
-              onClick={retrieveMovies(searchName)}
+              onClick={() => retrieveMovies(searchName)}
               //Need to add on click event and state event here
             >
               Search
@@ -53,13 +54,23 @@ const Movies = props => {
           </div>
         </div>
       </div>
-      <div className="card-group pt-3 pb-3">
-          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/fXm3YKXAEjx7d2tIWDg9TfRZtsU.jpg"}}/>
-          <MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://image.tmdb.org/t/p/w185/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg"}}/>
-          <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/xj3jhyq3ZsfdVn79kXC1XKFVQlv.jpg"}}/>
+      <div className="row pt-3 pb-3 justify-content-center">
+          {
+            movies.map(currentMovie => {
+              var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
+              return(
+                <MovieCard movie={{"name":currentMovie.original_title, "description":currentMovie.overview, "image":movieImage}}/>
+              )
+            })
+          }
       </div>
     </div>
   );
 };
 
+//{movies.map((movies) =>{
+//<MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/fXm3YKXAEjx7d2tIWDg9TfRZtsU.jpg"}}/>
+//<MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://image.tmdb.org/t/p/w185/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg"}}/>
+//<MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/xj3jhyq3ZsfdVn79kXC1XKFVQlv.jpg"}}/>
+//}};
 export default Movies;
