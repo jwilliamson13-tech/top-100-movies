@@ -8,6 +8,18 @@ class MoviesDataService{
   getMovies(name){
     return http.get(`/movies?name=${name}`,{mode: 'no-cors'});
   }
+
+  getMovie(movieId){
+    
+  }
+
+  getUsers(){
+    return http.get(`/users`,{mode:'no-cors'});
+  }
+
+  getUser(userId){
+    return http.get(`/users/${userId}`,{mode:'no-cors'});
+  }
 }
 
 export default new MoviesDataService();

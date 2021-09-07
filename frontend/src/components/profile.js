@@ -1,8 +1,30 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import MovieCard from "./movieCard"
+import React, { useState,useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import MovieCard from "../components/movieCard";
+import DataService from "../services/dataService";
 
 const Profile = props => {
+
+  const [user, setUser] = useState();
+  const [movies, setMovies] = useState([]);
+
+  const params = useParams();
+
+  const userId = params.userId;
+
+  useEffect(()=>{
+    getUser(userId);
+  },[]);
+
+
+  const getUser = (userId) => {
+    DataService.getUser(userId)
+    .then(response => {
+      console.log(response.data);
+      setUser(response.data); //Gonna have to change this to match data received
+      console.log(user);
+    })
+  }
   return (
     <div className="container mt-3">
       <div className="row">
@@ -13,8 +35,6 @@ const Profile = props => {
           </div>
         </div>
         <div className="col-lg-4 align-self-top">
-          <h3 className="text-center">TEST NAME</h3>
-          <h4 className="text-center">Last Login: Yesterday</h4>
         </div>
         <div className="col-lg-4 align-self-center">
           <h3 className="text-center">FAVORITE MOVIE</h3>
@@ -23,7 +43,8 @@ const Profile = props => {
       </div>
       <div className="row">
         <h3 className="text-center">Top 100 Movies</h3>
-        <div className="card-group pt-3 pb-3">
+        <div className="row pt-3 pb-3 justify-content-center">
+
           <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/fXm3YKXAEjx7d2tIWDg9TfRZtsU.jpg"}}/>
           <MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://image.tmdb.org/t/p/w185/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg"}}/>
           <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/xj3jhyq3ZsfdVn79kXC1XKFVQlv.jpg"}}/>

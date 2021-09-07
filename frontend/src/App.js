@@ -16,7 +16,7 @@ function App() {
         <Route exact path="/" component={Dashboard}/>
         <Route exact path="/movies" component={Movies}/>
         <Route exact path="/profiles" component={Profiles}/>
-        <Route exact path="/profile" component={Profile}/>
+        <Route path="/profile/:userId" component={Profile}/>
       </Switch>
       <Footer/>
     </div>

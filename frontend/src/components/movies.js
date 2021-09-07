@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import MovieCard from "../components/movieCard";
-import MoviesDataService from "../services/moviesDataService";
+import MoviesDataService from "../services/dataService";
 
 const Movies = props => {
 
@@ -32,7 +32,7 @@ const Movies = props => {
 
   return (
     <div className="container pr-5 pl-5">
-      <h1 className="text-center">MOVIES GO HERE</h1>
+      <h1 className="text-center">Search for Movies</h1>
       <div className="row pb-1">
         <div className="input-group col-lg-4">
           <input
