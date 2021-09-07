@@ -20,7 +20,6 @@ const Profiles = props => {
   const retrieveUsers = () => {
       DataService.getUsers()
       .then(response => {
-        console.log(response.data);
         setProfiles(response); //Gonna have to change this to match data received
       })
     };
@@ -59,7 +58,7 @@ const Profiles = props => {
         </div>
       </div>
       <div className="row pt-3 pb-3 justify-content-center">
-      
+
 
       </div>
     </div>

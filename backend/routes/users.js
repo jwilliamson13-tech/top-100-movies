@@ -19,6 +19,19 @@ router.get('/', async (req,res) =>{
   res.send(users);
 });
 
+//Returning Auth
+router.get('/profile', (req, res) => {
+  console.log("OIDC", req.oidc);
+  //Prepare an authentication object for the frontend
+  var auth = {};
+  auth.auth = req.oidc.isAuthenticated();
+
+  auth.profile = req.oidc.user;
+
+  console.log(auth);
+  res.send(auth);
+});
+
 //Add Auth after front end exists
 router.get('/:id', async (req,res) => {
 

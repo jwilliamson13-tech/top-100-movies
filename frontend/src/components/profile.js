@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import MovieCard from "../components/movieCard";
 import DataService from "../services/dataService";
+import AuthService from "../services/authService";
 
 const Profile = props => {
 
@@ -13,6 +14,7 @@ const Profile = props => {
   const userId = params.userId;
 
   useEffect(()=>{
+    console.log(AuthService.getAuth());
     getUser(userId);
   },[]);
 

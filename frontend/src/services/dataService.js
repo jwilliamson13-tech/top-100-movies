@@ -6,11 +6,11 @@ class MoviesDataService{
   }
 
   getMovies(name){
-    return http.get(`/movies?name=${name}`,{mode: 'no-cors'});
+    return http.get(`/movies?name=${name}`);
   }
 
   getMovie(movieId){
-    
+
   }
 
   getUsers(){
