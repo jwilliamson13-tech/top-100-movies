@@ -7,6 +7,7 @@ import Dashboard from "./components/dashboard";
 import Movies from "./components/movies";
 import Profiles from "./components/profiles";
 import Profile from "./components/profile";
+import Login from "./components/login"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Navbar/>
       <Switch>
         <Route exact path="/" component={Dashboard}/>
+        <Route exact path="/login" component={Login}/>
         <Route exact path="/movies" component={Movies}/>
         <Route exact path="/profiles" component={Profiles}/>
         <Route path="/profile/:userId" component={Profile}/>

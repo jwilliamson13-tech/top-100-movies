@@ -3,10 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import MovieCard from "../components/movieCard";
 import DataService from "../services/dataService";
 import AuthService from "../services/authService";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = props => {
 
-  const [user, setUser] = useState();
+  const { user, isAuthenticated, isLoading } = useAuth0();
   const [movies, setMovies] = useState([]);
 
   const params = useParams();
@@ -15,10 +16,9 @@ const Profile = props => {
 
   useEffect(()=>{
     console.log(AuthService.getAuth());
-    getUser(userId);
   },[]);
 
-
+  /*
   const getUser = (userId) => {
     DataService.getUser(userId)
     .then(response => {
@@ -27,8 +27,19 @@ const Profile = props => {
       console.log(user);
     })
   }
+  */
+  if(isLoading){
+    return(
+      <div>LOADING...</div>
+    )
+  }
+
   return (
+    isAuthenticated &&
+    (
     <div className="container mt-3">
+      {user.nickname}
+      {console.log(user)}
       <div className="row">
         <div className="col-lg-4">
           <div className="card">
@@ -53,7 +64,7 @@ const Profile = props => {
         </div>
       </div>
     </div>
-  );
+  ));
 };
 
 export default Profile;

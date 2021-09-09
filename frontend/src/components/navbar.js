@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Login from "../components/login";
+import Logout from "../components/logout";
 
 const Navbar = props => {
   return (
@@ -13,7 +15,10 @@ const Navbar = props => {
             <a className="nav-link" href="/profiles">Profiles</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="/login">Login</a>
+          <Login/>
+        </li>
+        <li className="nav-item">
+          <Logout/>
         </li>
       </ul>
     </nav>
