@@ -8,7 +8,7 @@ const tmdbDAO = require("../dao/tmdbDAO.js");
 console.log(tmdbDAO);
 // req.isAuthenticated is provided from the auth router
 router.get('/', (req, res) => {
-  
+  console.log(req.oidc.user);
   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
 });
 

@@ -7,16 +7,25 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = props => {
 
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   const [movies, setMovies] = useState([]);
 
   const params = useParams();
 
   const userId = params.userId;
 
+  var accessToken;
+
   useEffect(()=>{
-    console.log(AuthService.getAuth());
+    async function getAccessToken() {
+      accessToken = getAccessTokenSilently();
+      console.log(accessToken)
+    }
+
+    getAccessToken();
   },[]);
+
+
 
   /*
   const getUser = (userId) => {
@@ -40,6 +49,7 @@ const Profile = props => {
     <div className="container mt-3">
       {user.nickname}
       {console.log(user)}
+      {console.log(accessToken)}
       <div className="row">
         <div className="col-lg-4">
           <div className="card">
