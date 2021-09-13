@@ -24,7 +24,7 @@ exports.getRefreshToken = User => {
   const refreshToken = jwt.sign(User, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: eval(process.env.REFRESH_TOKEN_EXPIRY),
   })
-  return refreshToken
+  return refreshToken;
 }
 
-exports.verify = passport.authenticate("jwt", { session: false })
+exports.verifyUser = passport.authenticate("jwt", { session: false });

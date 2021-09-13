@@ -6,8 +6,9 @@ const router = express.Router();
 const userDAO = require("../dao/userDAO.js");
 const User = require("../models/User");
 const bodyParser = require('body-parser');
-const { getToken, COOKIE_OPTIONS, getRefreshToken,verify } = require("../authenticate")
-const passport = require("passport")
+const { getToken, COOKIE_OPTIONS, getRefreshToken,verifyUser } = require("../authenticate")
+const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 // create application/json parser
 var jsonParser = bodyParser.json()
@@ -15,10 +16,9 @@ var jsonParser = bodyParser.json()
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-router.post("/login", passport.authenticate("local"), jsonParser, (req,res) =>{
-  console.log(req.body);
-  const token = getToken({ _id: req.body.user._id })
-  const refreshToken = getRefreshToken({ _id: req.body.user._id })
+router.post("/login", jsonParser, passport.authenticate("local"), (req,res) =>{
+  const token = getToken({ _id: req.user._id })
+  const refreshToken = getRefreshToken({ _id: req.user._id })
   User.findById(req.user._id).then(user => {
       user.refreshToken.push({ refreshToken });
       user.save((err, user) => {
@@ -40,17 +40,19 @@ router.post("/refreshToken", (req,res,next) =>{
 
   if (refreshToken) {
     try {
-      const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-      const userId = payload._id
+      const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      const userId = payload._id;
 
       User.findOne({ _id: userId }).then(user => {
         if (user) {
           // Find the refresh token and compare it to the one in the user record in the database
           const tokenIndex = user.refreshToken.findIndex((item) => {
-            item.refreshToken === refreshToken
+            return item.refreshToken === refreshToken;
           });
 
+
           if (tokenIndex === -1) {
+            console.error("No Token Found");
             res.statusCode = 401;
             res.send("Unauthorized");
           } else {
@@ -61,8 +63,8 @@ router.post("/refreshToken", (req,res,next) =>{
             user.refreshToken[tokenIndex] = { refreshToken: newRefreshToken }
             user.save((err, user) => {
               if (err) {
-                res.statusCode = 500
-                res.send(err)
+                res.statusCode = 500;
+                res.send(err);
               } else {
                 res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS);
                 res.send({ success: true, token });
@@ -72,26 +74,62 @@ router.post("/refreshToken", (req,res,next) =>{
         }
         //User wasn't found
         else {
-          res.statusCode = 401
-          res.send("Unauthorized")
+          console.error("User not found");
+          res.statusCode = 401;
+          res.send("Unauthorized");
         }
       },
       err => next(err)
       );
     }
-    catch (err) {
-      res.statusCode = 401
-      res.send("Unauthorized")
+    catch (e) {
+      console.error("Error with jwt payload: ", e);
+      res.statusCode = 401;
+      res.send("Unauthorized");
     }
   }
   else {
-    res.statusCode = 401
-    res.send("Unauthorized")
+    console.error("Error: No refresh Token");
+    res.statusCode = 401;
+    res.send("Unauthorized");
   }
 });
 
-router.get("/user", verify, (req,res) =>{
+router.get("/user", verifyUser, (req,res) =>{
   res.send(req.user);
+});
+
+router.get("/logout", verifyUser, (req,res) =>{
+  const { signedCookies = {} } = req;
+  const { refreshToken } = signedCookies;
+
+  User.findById(req.user._id, (err, user) =>{
+    if(err){
+      console.error("Error logging out: ", err);
+      res.statusCode = 500;
+      res.send("Error logging out: ", err);
+    }
+    else{
+      const tokenIndex = user.refreshToken.findIndex((item) => {
+        return item.refreshToken === refreshToken;
+      });
+
+      if (tokenIndex !== -1) {
+        user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove();
+      }
+
+      user.save((err, user) => {
+        if(err){
+          res.statusCode = 500;
+          res.send("Error logging out: ", err);
+        }
+        else{
+          res.clearCookie("refreshToken",COOKIE_OPTIONS);
+          res.send({success:true});
+        }
+      });
+    }
+  });
 });
 
 router.get('/', async (req,res) =>{
