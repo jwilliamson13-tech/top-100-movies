@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.ObjectId;
+const { getToken, COOKIE_OPTIONS, getRefreshToken } = require("../authenticate")
+const bcrypt = require('bcrypt');
 
 console.log(User);
 
@@ -26,6 +28,72 @@ class userDAO{
       console.error("Error getting user: ", e);
     }
   }
+
+  static async registerUser(email, password, password2){
+    /*
+    if(!email){
+      return {success: false, error: "No Email Given"}
+    }
+
+    if(password != password2){
+      return {success: false, error: "Passwords do not match"}
+    }
+
+    //Check if user exists
+    console.log("2");
+    //If not, register
+
+      try{
+        console.log("3");
+        await User.register(new User({email: email}),password, async (err,newUser) => {
+          console.log("4");
+          if(err){
+            console.log(err);
+            return {success: false, error: "Failure generating user"}
+          }
+          else{
+            console.log("5");
+            //Get user token
+            const token = getToken({ _id: newUser._id });
+            const refreshToken = getRefreshToken({ _id: newUser._id });
+            newUser.refreshToken.push({ refreshToken });
+            var updatedUser = newUser.save()
+            console.log("6");
+
+            var thingToReturn = { success: true, token: token, refreshToken:refreshToken }
+            console.log("7");
+            return { success: true, token: token, refreshToken:refreshToken }
+
+            /*
+            //Salt password
+            bcrypt.genSalt(10, (err, salt) => {
+              if(err){
+                return {success: false, error: "Failure generating salt"}
+              }
+              else{
+                bcrypt.hash(password, salt, async (err, hash) => {
+                  if (err){
+                    return {success: false, error: "Failure hashing password"}
+                  }
+                  newUser.password = hash;
+                  await newUser.save()
+
+                  var thingToReturn = { success: true, token: token, refreshToken:refreshToken }
+                  console.log(thingToReturn)
+                  return { success: true, token: token, refreshToken:refreshToken }
+                });
+              }
+              });
+              - COMMENT ENDER GOES HERE * /
+
+            }
+          });
+      }
+      catch (e){
+        console.error("Error creating user:", e);
+      }
+      */
+    }
 
   //Delete User
   static async deleteUser(userId){

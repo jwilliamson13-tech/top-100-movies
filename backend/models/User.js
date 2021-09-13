@@ -1,4 +1,12 @@
 const mongoose = require('mongoose');
+const passportLocalMongoose = require("passport-local-mongoose")
+
+const Session = new mongoose.Schema({
+  refreshToken: {
+    type: String,
+    default: ""
+  }
+})
 
 const UserSchema = new mongoose.Schema({
   connection: {
@@ -7,23 +15,11 @@ const UserSchema = new mongoose.Schema({
   client_id: {
     type: String
   },
-  email: {
+  username: {
     type: String
   },
   password: {
     type: String
-  },
-  tenant: {
-    type: String
-  },
-  transaction: {
-    type: Object
-  },
-  request_language: {
-    type: String
-  },
-  email_verified: {
-    type: Boolean
   },
   favorite_movies: {
     type: Array,
@@ -32,8 +28,29 @@ const UserSchema = new mongoose.Schema({
   following:{
     type: Array,
     default: []
+  },
+  authStrategy: {
+    type: String,
+    default: "local",
+  },
+  points: {
+    type: Number,
+    default: 50,
+  },
+  refreshToken: {
+    type: [Session]
   }
 });
+
+UserSchema.set("toJSON", {
+  transform: function (doc, ret, options) {
+    delete ret.refreshToken
+    return ret
+  },
+
+})
+
+UserSchema.plugin(passportLocalMongoose, {usernameField: 'email'})
 
 const User = mongoose.model('User',UserSchema);
 
