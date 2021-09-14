@@ -29,14 +29,12 @@ const whiteList = process.env.WHITELISTED_DOMAINS ? process.env.WHITELISTED_DOMA
 
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(whiteList);
-    console.log(origin);
-    console.log(whiteList.indexOf(origin));
 
-    //indexOf wasn't working for some reason
+    //could potentially use indexOf here
     const whiteListIndex = whiteList.findIndex((url) => {
       return url === origin;
     });
+
     if (!origin || whiteListIndex !== -1) {
       callback(null, true);
     }

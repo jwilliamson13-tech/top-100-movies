@@ -46,6 +46,7 @@ const Login = () => {
         setUserContext(oldUserValues => {
           return {...oldUserValues, token:data.token};
         });
+        console.log(userContext);
       }
     })
     .catch(e =>{
@@ -54,7 +55,7 @@ const Login = () => {
     });
   }
 
-  console.log(UserContext)
+
   return(
     <div className="container pr-5 pl-5">
       {error && <div className="alert alert-danger">{error}</div>}

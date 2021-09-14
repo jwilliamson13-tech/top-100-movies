@@ -2,20 +2,68 @@ import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import AuthDataService from "../services/authService";
 import { useAuth0 } from "@auth0/auth0-react";
+import { UserContext } from "../context/UserContext";
 
 
 
 const Register = () => {
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const[isSubmitting, setIsSubmitting] = useState(false);
+  const[error,setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [userContext, setUserContext] = useContext(UserContext);
+
+
+  const formSubmitHandler = e => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+
+    const errorMessage = "Something went wrong! Please try again later.";
+
+    fetch("http://localhost:3000/users/register", {
+      method: "POST",
+      credentials: "include",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({email:email,password:password,password2:password2})
+    })
+    .then(async response => {
+      if(!response.ok){
+        if(response.status === 400){
+          setError("Please fill all the fields correctly!");
+        }
+        else if(response.status === 401) {
+          setError("Invalid email and password combination.");
+        }
+        else if(response.status === 500){
+          console.error("Error registering user: ", response);
+          const data = await response.json();
+          if(data.message) {
+            setError(data.message || errorMessage);
+          }
+        }
+        else{
+          setError(errorMessage);
+        }
+      }
+      else{
+        const data = await response.json();
+        setUserContext(oldUserValues => {
+          return {...oldUserValues, token:data.token};
+        });
+      }
+    })
+    .catch(e => {
+      setIsSubmitting(false);
+      setError(errorMessage);
+    })
+  }
 
   return(
     <div className="container pr-5 pl-5">
-      <form className="">
+    {error && <div className="alert alert-danger">{error}</div>}
+      <form className="" onSubmit={formSubmitHandler}>
         <div className="form-group" label="Email" labelFor="email">
           <input
             id="email"
@@ -45,7 +93,7 @@ const Register = () => {
             onChange={e => setPassword2(e.target.value)}
           />
         </div>
-        <button class="btn-primary" type="submit">Register</button>
+        <button class="btn-primary" type="submit" disabled={isSubmitting}>{`${isSubmitting ? "Registering" : "Register"}`}</button>
       </form>
     </div>
   )
