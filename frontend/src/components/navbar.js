@@ -14,12 +14,6 @@ const Navbar = props => {
         <li className="nav-item">
             <a className="nav-link" href="/profiles">Profiles</a>
         </li>
-        <li className="nav-item">
-          <Login/>
-        </li>
-        <li className="nav-item">
-          <Logout/>
-        </li>
       </ul>
     </nav>
   );

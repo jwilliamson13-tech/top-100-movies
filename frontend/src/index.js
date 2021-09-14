@@ -6,18 +6,13 @@ import reportWebVitals from './reportWebVitals';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter} from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { UserProvider } from "./context/UserContext";
 
 ReactDOM.render(
   <BrowserRouter>
-    <Auth0Provider
-    domain="dev-c79t3hj2.us.auth0.com"
-    clientId="xiVWTVoSDN6SKmpcLWIncSmIGONUJWf9"
-    redirectUri="http://localhost:5000",
-    audience="http://localhost:5000",
-    scope=""
-    >
-    <App />
-    </Auth0Provider>,
+    <UserProvider>
+      <App />
+    </UserProvider>
   </BrowserRouter>,
   document.getElementById('root')
 );
