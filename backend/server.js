@@ -25,8 +25,30 @@ app.use(passport.initialize())
 //Process .env PORT is used for Heroku deployment
 const port = process.env.PORT || 3000;
 
+const whiteList = process.env.WHITELISTED_DOMAINS ? process.env.WHITELISTED_DOMAINS.split(",") : [];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    console.log(whiteList);
+    console.log(origin);
+    console.log(whiteList.indexOf(origin));
+
+    //indexOf wasn't working for some reason
+    const whiteListIndex = whiteList.findIndex((url) => {
+      return url === origin;
+    });
+    if (!origin || whiteListIndex !== -1) {
+      callback(null, true);
+    }
+    else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}
+
 // auth router attaches /login, /logout, and /callback routes to the baseURL
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(auth(config));
 app.use('/', require('./routes/index.js'));
 app.use('/api/v1', require('./routes/api.js'));
