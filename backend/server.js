@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport")
 
 if (process.env.NODE_ENV !== "production") {
-  // Load environment variables from .env file in non prod environments
+  // Load environment variables from .env file
   require("dotenv").config()
 }
 
@@ -29,12 +29,14 @@ const whiteList = process.env.WHITELISTED_DOMAINS ? process.env.WHITELISTED_DOMA
 
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log(whiteList);
+    console.log(origin);
+    console.log(whiteList.indexOf(origin));
 
-    //could potentially use indexOf here
+    //indexOf wasn't working for some reason
     const whiteListIndex = whiteList.findIndex((url) => {
       return url === origin;
     });
-
     if (!origin || whiteListIndex !== -1) {
       callback(null, true);
     }

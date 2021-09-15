@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import AuthDataService from "../services/authService";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -22,19 +22,20 @@ const Register = () => {
 
     const errorMessage = "Something went wrong! Please try again later.";
 
-    fetch("http://localhost:3000/users/register", {
+    fetch("http://localhost:3000/users", {
       method: "POST",
       credentials: "include",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({email:email,password:password,password2:password2})
     })
     .then(async response => {
+      setIsSubmitting(false);
       if(!response.ok){
         if(response.status === 400){
-          setError("Please fill all the fields correctly!");
+          setError("Please fill out all fields correctly!");
         }
         else if(response.status === 401) {
-          setError("Invalid email and password combination.");
+          setError("Invalid email and/or password.");
         }
         else if(response.status === 500){
           console.error("Error registering user: ", response);
@@ -52,6 +53,7 @@ const Register = () => {
         setUserContext(oldUserValues => {
           return {...oldUserValues, token:data.token};
         });
+        console.log(userContext);
       }
     })
     .catch(e => {
@@ -61,40 +63,48 @@ const Register = () => {
   }
 
   return(
-    <div className="container pr-5 pl-5">
+    <div className="container-fluid pt-5 pb-5 pr-5 pl-5">
     {error && <div className="alert alert-danger">{error}</div>}
-      <form className="" onSubmit={formSubmitHandler}>
-        <div className="form-group" label="Email" labelFor="email">
-          <input
-            id="email"
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
+      <div className="row d-flex justify-content-center align-items-center">
+        <div className="col-md-6">
+          <img className="img-fluid" src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"/>
         </div>
-        <br/>
-        <div className="form-group" label="Password" labelFor="password">
-          <input
-            id="password"
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
+        <div className="col-md-6 justify-content-center">
+          <h1 className="text-center pb-3">We&apos;re Glad To Have You!</h1>
+          <h3 className="text-center pb-3">Please Register Below</h3>
+          <form className="" onSubmit={formSubmitHandler}>
+            <input
+              className="form-control"
+              id="email"
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+            <br/>
+            <input
+              className="form-control"
+              id="password"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <br/>
+            <input
+              className="form-control"
+              id="password2"
+              placeholder="Confirm Password"
+              type="password"
+              value={password2}
+              onChange={e => setPassword2(e.target.value)}
+            />
+            <br/>
+            <button class="btn-primary btn-lg" type="submit" disabled={isSubmitting}>{`${isSubmitting ? "Registering" : "Register"}`}</button>
+          </form>
+          <br/>
         </div>
-        <br/>
-        <div className="form-group" label="Password2" labelFor="password2">
-          <input
-            id="password2"
-            placeholder="Confirm Password"
-            type="password"
-            value={password2}
-            onChange={e => setPassword2(e.target.value)}
-          />
-        </div>
-        <button class="btn-primary" type="submit" disabled={isSubmitting}>{`${isSubmitting ? "Registering" : "Register"}`}</button>
-      </form>
+      </div>
     </div>
   )
 

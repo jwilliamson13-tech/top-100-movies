@@ -1,18 +1,18 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import MovieCard from "../components/movieCard";
 import MoviesDataService from "../services/dataService";
+import { UserContext } from "../context/UserContext";
 
 const Movies = props => {
-
-
+  const [userContext, setUserContext] = useContext(UserContext);
   const [movies, setMovies] = useState([]);
   const [searchName, setSearchName ] = useState("");
-  /*
+
   useEffect(()=>{
-      retrieveMovies();
+      console.log(userContext);
     }, []);
-    */
+
 
   const onChangeSearchName = e => {
       const searchName = e.target.value;

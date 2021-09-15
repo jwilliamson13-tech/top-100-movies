@@ -19,6 +19,8 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 router.post("/login", jsonParser, passport.authenticate("local"), (req,res) =>{
   const token = getToken({ _id: req.user._id })
   const refreshToken = getRefreshToken({ _id: req.user._id })
+
+  console.log(req.body);
   User.findById(req.user._id).then(user => {
       user.refreshToken.push({ refreshToken });
       user.save((err, user) => {
@@ -96,6 +98,7 @@ router.post("/refreshToken", (req,res,next) =>{
 });
 
 router.get("/user", verifyUser, (req,res) =>{
+  console.log("GETTING USER");
   res.send(req.user);
 });
 
@@ -141,6 +144,7 @@ router.get('/', async (req,res) =>{
 router.post("/", jsonParser, async (req,res) => {
 
   var {email,password,password2} = req.body;
+  console.log(email);
   try{
     if(!email){
       return {success: false, error: "No Email Given"}

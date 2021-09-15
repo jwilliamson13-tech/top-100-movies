@@ -34,7 +34,7 @@ const Login = () => {
           setError("Please fill out all fields correctly.");
         }
         else if(response.status === 401){
-          setError("Invalid email and password combination");
+          setError("Invalid email and/or password combination");
         }
         else {
           setError(errorMessage);
@@ -57,33 +57,48 @@ const Login = () => {
 
 
   return(
-    <div className="container pr-5 pl-5">
+    <div className="container-fluid pt-5 pb-5 pr-5 pl-5">
       {error && <div className="alert alert-danger">{error}</div>}
-      <form className="" onSubmit={formSubmitHandler}>
-        <div className="form-group" label="Email" labelFor="email">
-          <input
-            id="email"
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
+      <div className="row d-flex justify-content-center align-items-center">
+        <div className="col-md-6">
+          <img className="img-fluid" src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1050&q=80"/>
+
         </div>
-        <div className="form-group" label="Password" labelFor="password">
-          <input
-            id="password"
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
+        <div className="col-md-6 justify-content-center">
+        <h1 className="text-center pb-3">Login...</h1>
+        <h1 className="text-center pb-3">Please turn off your cell phone...</h1>
+          <form className="" onSubmit={formSubmitHandler}>
+            <input
+              className="form-control"
+              id="email"
+              placeholder="Email"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+            <br/>
+            <input
+              className="form-control"
+              id="password"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <br/>
+            <button
+            className="btn btn-primary btn-lg"
+            type="submit"
+            disabled={isSubmitting}
+            >{`${isSubmitting ? "Logging In" : "Login"}`}</button>
+          </form>
+          <h3 className="text-center pb-3">... unless that&apos;s what you&apos;re using to view this page!</h3>
+          <h3 className="text-center pb-3">... then settle in!</h3>
+          <p className="small fw-bold mt-2 pt-1 mb-0">Get your ticket (<Link to="/register" className="link-danger">register</Link>) here!</p>
+          <p className="small fw-bold mt-2 pt-1 mb-0">Don&apos;t have an account? <Link to="/register" className="link-danger">Register</Link></p>
+          <br/>
         </div>
-        <button
-        className="btn-primary"
-        type="submit"
-        disabled={isSubmitting}
-        >{`${isSubmitting ? "Signing In" : "Sign In"}`}</button>
-      </form>
+      </div>
     </div>
   )
 

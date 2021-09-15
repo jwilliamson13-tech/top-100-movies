@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema({
   client_id: {
     type: String
   },
-  username: {
+  email: {
     type: String
   },
   password: {
@@ -48,9 +48,9 @@ UserSchema.set("toJSON", {
     return ret
   },
 
-})
+});
 
-UserSchema.plugin(passportLocalMongoose, {usernameField: 'email'})
+UserSchema.plugin(passportLocalMongoose, {"usernameField": "email"});
 
 const User = mongoose.model('User',UserSchema);
 
