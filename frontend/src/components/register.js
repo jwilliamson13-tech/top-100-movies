@@ -1,5 +1,5 @@
 import React, { useState,useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import AuthDataService from "../services/authService";
 import { useAuth0 } from "@auth0/auth0-react";
 import { UserContext } from "../context/UserContext";
@@ -7,6 +7,9 @@ import { UserContext } from "../context/UserContext";
 
 
 const Register = () => {
+
+  const history = useHistory();
+
   const[isSubmitting, setIsSubmitting] = useState(false);
   const[error,setError] = useState("");
   const [email, setEmail] = useState("");
@@ -53,6 +56,7 @@ const Register = () => {
         setUserContext(oldUserValues => {
           return {...oldUserValues, token:data.token};
         });
+        history.push("/login");
         console.log(userContext);
       }
     })
