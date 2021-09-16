@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import 'font-awesome/css/font-awesome.min.css';
 
 const Footer = props => {
   return (
@@ -26,10 +27,10 @@ const Footer = props => {
 
               <ul className="list-unstyled mb-0">
                 <li>
-                  <a href="#!" >EMAIL</a>
+                  <p> Email: <a className="fa fa-lg fa-envelope" href="mailto:joshua@joshuawilliamson.net"></a></p>
                 </li>
                 <li>
-                  <a href="#!" >GITHUB</a>
+                  <p> Github: <a className="fa fa-lg fa-github" href="https://github.com/jwilliamson13-tech"></a></p>
                 </li>
               </ul>
             </div>
@@ -37,8 +38,7 @@ const Footer = props => {
         </section>
       </div>
       <div className="text-center p-3">
-        2020 LICENSE TYPE HERE:
-        <a  href="https://mdbootstrap.com/">LINK TO LICESNSE HERE</a>
+        <div className="fa fa-copyright"></div> 2021 Joshua Williamson: <a  href="https://opensource.org/licenses/MIT">MIT LICENSE</a>
       </div>
     </footer>
   );

@@ -8,6 +8,7 @@ import {BrowserRouter} from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { UserProvider } from "./context/UserContext";
 
+
 ReactDOM.render(
   <BrowserRouter>
     <UserProvider>

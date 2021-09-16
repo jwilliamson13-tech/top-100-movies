@@ -78,35 +78,31 @@ const Register = () => {
           <h3 className="text-center pb-3">Please Register Below</h3>
           <form className="" onSubmit={formSubmitHandler}>
             <input
-              className="form-control"
+              className="form-control mb-4"
               id="email"
               placeholder="Email"
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-            <br/>
             <input
-              className="form-control"
+              className="form-control mb-4"
               id="password"
               placeholder="Password"
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-            <br/>
             <input
-              className="form-control"
+              className="form-control mb-4"
               id="password2"
               placeholder="Confirm Password"
               type="password"
               value={password2}
               onChange={e => setPassword2(e.target.value)}
             />
-            <br/>
             <button class="btn-primary btn-lg" type="submit" disabled={isSubmitting}>{`${isSubmitting ? "Registering" : "Register"}`}</button>
           </form>
-          <br/>
         </div>
       </div>
     </div>

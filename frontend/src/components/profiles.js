@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
-import DataService from "../services/dataService";
+import DataService from "../services/userDataService";
 import ProfileCard from "./profileCard"
 
 const Profiles = props => {
@@ -20,18 +20,19 @@ const Profiles = props => {
   const retrieveUsers = () => {
       DataService.getUsers()
       .then(response => {
-        setProfiles(response); //Gonna have to change this to match data received
+        setProfiles(response.data); //Gonna have to change this to match data received
       })
     };
 
   const retrieveUser = (searchName) => {
-      console.log(searchName);
-      DataService.getUser(searchName)
-      .then(response => {
-        console.log(response.data.data);
-        setProfiles(response); //Gonna have to change this to match data received
-      })
-    };
+    if(searchName.length == 0){
+      retrieveUsers();
+    }
+    else{
+      var filteredUsers = profiles.filter(user => user.email.toLowerCase().includes(searchName.toLowerCase()));
+      setProfiles(filteredUsers);
+    }
+  };
 
   return (
     <div className="container pr-5 pl-5">
@@ -58,8 +59,20 @@ const Profiles = props => {
         </div>
       </div>
       <div className="row pt-3 pb-3 justify-content-center">
-
-
+        {
+          profiles.map(currentProfile => {
+            var favorite_movie = "";
+            if(currentProfile.favorite_movies.length > 0){
+              favorite_movie = currentProfile.favorite_movies[0].original_title //Have to change this if using a map
+            }
+            else{
+              favorite_movie = "NONE"
+            }
+            return(
+              <ProfileCard profile={{"email":currentProfile.email, "favorite_movies_length":currentProfile.favorite_movies.length, "favorite_movie":favorite_movie, "_id":currentProfile._id}}/>
+            )
+          })
+        }
       </div>
     </div>
   );

@@ -48,7 +48,7 @@ const Login = () => {
         setUserContext(oldUserValues => {
           return {...oldUserValues, token:data.token};
         });
-        history.push("/");
+        history.push("/movies");
         console.log(userContext);
       }
     })
@@ -68,27 +68,24 @@ const Login = () => {
 
         </div>
         <div className="col-md-6 justify-content-center">
-        <h1 className="text-center pb-3">Login...</h1>
         <h1 className="text-center pb-3">Please turn off your cell phone...</h1>
           <form className="" onSubmit={formSubmitHandler}>
             <input
-              className="form-control"
+              className="form-control mb-4"
               id="email"
               placeholder="Email"
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-            <br/>
             <input
-              className="form-control"
+              className="form-control mb-4"
               id="password"
               placeholder="Password"
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-            <br/>
             <button
             className="btn btn-primary btn-lg"
             type="submit"
@@ -96,10 +93,7 @@ const Login = () => {
             >{`${isSubmitting ? "Logging In" : "Login"}`}</button>
           </form>
           <h3 className="text-center pb-3">... unless that&apos;s what you&apos;re using to view this page!</h3>
-          <h3 className="text-center pb-3">... then settle in!</h3>
-          <p className="small fw-bold mt-2 pt-1 mb-0">Get your ticket (<Link to="/register" className="link-danger">register</Link>) here!</p>
           <p className="small fw-bold mt-2 pt-1 mb-0">Don&apos;t have an account? <Link to="/register" className="link-danger">Register</Link></p>
-          <br/>
         </div>
       </div>
     </div>
