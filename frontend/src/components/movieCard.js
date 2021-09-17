@@ -10,16 +10,24 @@ const MovieCard = props => {
   const [userContext, setUserContext] = useContext(UserContext);
   const [error, setError] = useState("");
   const [buttonText, setButtonText] = useState("");
+  const [rankInput, setRankInput] = useState("");
   var errorMessage = "Error with movies. Please try again later.";
+  var movieAdded = props.movie.movieAlreadyAdded;
 
   useEffect(()=>{
+      //Get User Details
+
+      //Redirect if not logged in
+
       //Set the state of the button based on movie added or not
       console.log(props.movie.movieAlreadyAdded);
       if(props.movie.movieAlreadyAdded){
         setButtonText("Delete Movie");
+        setRankInput("");
       }
       else{
         setButtonText("Add Movie");
+        setRankInput("<div className=\"col-sm-5\"><input type=\"text\" className=\"form-control\" placeholder=\"Rank\" value={rank} onChange={onChangeRank}></input></div>");
       }
     }, []);
 
@@ -75,6 +83,8 @@ const MovieCard = props => {
           if(data.success){
             setRank("");
             setButtonText("Delete Movie");
+
+            movieAdded = true;
           }
         }
       })
@@ -97,6 +107,22 @@ const MovieCard = props => {
     }
   }
 
+  function rankInputFunc2(){
+    return rankInput;
+  }
+
+
+  function rankInputFunc(){
+    if(!movieAdded){
+      return(
+        <div className="col-sm-5">
+          <input type="text" className="form-control" placeholder="Rank" value={rank} onChange={onChangeRank}></input>
+        </div>
+      )
+    }
+  }
+
+
   return (
     <div className="card border embbed-responsive" style={{width: "18rem"}}>
       <div className="card-body">
@@ -104,16 +130,13 @@ const MovieCard = props => {
         <h5 className="card-title">{props.movie.currentMovie.original_title}</h5>
         <p className="card-text">{props.movie.currentMovie.overview}</p>
         <div className="row">
-        <div className="col-sm-5">
-          <input type="text" className="form-control" placeholder="Rank" value={rank} onChange={onChangeRank}></input>
-        </div>
+
+          <div dangerouslySetInnerHTML={{_html: rankInput}}></div>
+
+
         <div className="col-sm-7">
           <button className="btn btn-outline-secondary" type="button" onClick={buttonController}>{buttonText}</button>
         </div>
-
-        {
-          props.movie.currentMovie.movieAlreadyAdded == true ? (<button className="btn btn-outline-secondary" type="button" onClick={deleteMovie}>Delete Movie</button>) : <div></div>
-        }
         </div>
       </div>
     </div>

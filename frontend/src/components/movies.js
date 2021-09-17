@@ -9,6 +9,17 @@ const Movies = props => {
   const [movies, setMovies] = useState([]);
   const [searchName, setSearchName ] = useState("");
 
+  var userMoviesArray;
+
+  if(Object.entries(userContext.details.favorite_movies) < 1){
+    userMoviesArray = false;
+  }
+  else{
+    userMoviesArray = Object.entries(userContext.details.favorite_movies);
+  }
+
+
+
   useEffect(()=>{
       console.log(userContext);
     }, []);
@@ -28,6 +39,16 @@ const Movies = props => {
         console.log(movies);
       })
     };
+
+    //Write a function to compare movies ID
+    function areSameMovie(firstMovie, secondMovie){
+      if(firstMovie.id == secondMovie.id){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
 
 
   return (
@@ -58,16 +79,29 @@ const Movies = props => {
           {
             movies.map(currentMovie => {
               var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
-              var movieAlreadyAdded = true;
+              var movieAlreadyAdded;
               //Determine if movie is already added
-              console.log("Favorite Movies");
-              console.log(userContext.details);
-              if(Object.entries(userContext.details.favorite_movies) < 1){
+              if(!userMoviesArray){
                 movieAlreadyAdded = false;
               }
               else{
-                movieAlreadyAdded = false;
-                //movieAlreadyAdded = Array.from(Object.entriuserContext.details.favorite_movies).includes(currentMovie)
+                //movieAlreadyAdded = false;
+                console.log(userMoviesArray);
+                for(var i = 0; i < userMoviesArray.length; i++){
+                  if(areSameMovie(currentMovie,userMoviesArray[i][1])){
+                    movieAlreadyAdded = true;
+                    break;
+                  }
+                  else{
+                    movieAlreadyAdded = false;
+                  }
+                }
+                /*
+                console.log(currentMovie);
+                //console.log(userContext.details.favorite_movies);
+                console.log(Array.from(Object.entries(userContext.details.favorite_movies)));
+                movieAlreadyAdded = Array.from(Object.entries(userContext.details.favorite_movies)).includes(currentMovie);
+                */
               }
 
               return(
