@@ -58,8 +58,19 @@ const Movies = props => {
           {
             movies.map(currentMovie => {
               var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
+              var movieAlreadyAdded = true;
+              //Determine if movie is already added
+              console.log("Favorite Movies");
+              console.log(userContext.details.favorite_movies.entries);
+              if(userContext.details.favorite_movies.entries === undefined){
+                movieAlreadyAdded = false;
+              }
+              else{
+                movieAlreadyAdded = Array.from(userContext.details.favorite_movies.values()).includes(currentMovie)
+              }
+
               return(
-                <MovieCard movie={{"name":currentMovie.original_title, "description":currentMovie.overview, "image":movieImage}}/>
+                <MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":movieAlreadyAdded}}/>
               )
             })
           }

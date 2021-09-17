@@ -23,7 +23,7 @@ const Login = () => {
 
     const errorMessage = "Something went wrong! Please try again later.";
 
-    fetch("http://localhost:3000/users/login", {
+    fetch(process.env.REACT_APP_API_ENDPOINT+ "users/login", {
       method: "POST",
       credentials: "include",
       headers:{"Content-Type":"application/json"},

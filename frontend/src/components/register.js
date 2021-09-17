@@ -25,7 +25,7 @@ const Register = () => {
 
     const errorMessage = "Something went wrong! Please try again later.";
 
-    fetch("http://localhost:3000/users", {
+    fetch(process.env.REACT_APP_API_ENDPOINT + "users", {
       method: "POST",
       credentials: "include",
       headers:{"Content-Type":"application/json"},

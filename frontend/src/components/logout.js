@@ -11,7 +11,7 @@ const Logout = () => {
   const [userContext, setUserContext] = useContext(UserContext);
 
   const logoutHandler = () => {
-    fetch("http://localhost:3000/users/logout", {
+    fetch(process.env.REACT_APP_API_ENDPOINT + "users/logout", {
       credentials: "include",
       headers: {
         "Content-Type": "application-json",

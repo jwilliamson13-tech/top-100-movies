@@ -9,8 +9,8 @@ class MoviesDataService{
     return http.get(`/movies?name=${name}`);
   }
 
-  getMovie(movieId){
-
+  addMovie(id,movie,rank){
+    
   }
 }
 

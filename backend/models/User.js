@@ -22,8 +22,8 @@ const UserSchema = new mongoose.Schema({
     type: String
   },
   favorite_movies: {
-    type: Array,
-    default: []
+    type: Map,
+    default: {}
   },
   following:{
     type: Array,
