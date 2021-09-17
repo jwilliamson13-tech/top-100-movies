@@ -61,12 +61,13 @@ const Movies = props => {
               var movieAlreadyAdded = true;
               //Determine if movie is already added
               console.log("Favorite Movies");
-              console.log(userContext.details.favorite_movies.entries);
-              if(userContext.details.favorite_movies.entries === undefined){
+              console.log(userContext.details);
+              if(Object.entries(userContext.details.favorite_movies) < 1){
                 movieAlreadyAdded = false;
               }
               else{
-                movieAlreadyAdded = Array.from(userContext.details.favorite_movies.values()).includes(currentMovie)
+                movieAlreadyAdded = false;
+                //movieAlreadyAdded = Array.from(Object.entriuserContext.details.favorite_movies).includes(currentMovie)
               }
 
               return(
