@@ -53,6 +53,58 @@ router.get('/',async (req,res) =>{
   console.log(req.oidc);
 });
 
+router.delete('/movies', jsonParser, async (req,res) => {
+  var {id, movie} = req.body;
+
+  //Add checks for authentication and user id = id AND add in the authentication piece in the top beside json Parser
+
+  //Get user's favorite movies
+  User.findOne({"_id":id}, async (err, user) => {
+    if(err){
+      console.error("Error finding user: ", err);
+      res.status(500);
+      res.send({success: false, error: "User not found."});
+    }
+    else{
+      var favorite_movies = user.favorite_movies;
+      var moviesArray = favorite_movies.entries();
+      var movieToDeleteKey = -1;
+
+      //Loop through the array of entries
+      for(let [rank, currentMovie] of moviesArray){
+        //Find one where the movie ID matches
+        if(currentMovie.id == movie.id){
+          //Note the key
+          movieToDeleteKey = rank;
+        }
+      }
+
+
+      //Delete the movie
+      if(movieToDeleteKey != -1){
+        console.log("DELETING BASED ON KEY");
+        favorite_movies.delete(movieToDeleteKey);
+      }
+      else{
+        console.error("Movie not found in user's list");
+        res.status(500);
+        res.send({success: false, error: "Movie not in user's list"});
+      }
+
+      //Update the user with new favorite_movies
+      const updatedUser = await User.findOneAndUpdate({"_id":id},{'$set': {"favorite_movies":favorite_movies}},{'new':true});
+
+      //Check to see if new movie was deleted (this helps return errors)
+      if(updatedUser.favorite_movies.entries().length === favorite_movies.length){
+        res.send({success:true});
+      }
+      else{
+        res.send({success:false, error: "Error updating movie list"});
+      }
+    }
+  });
+});
+
 router.post('/movies', jsonParser, async (req,res) => {
   var {id, movie, rank} = req.body;
 

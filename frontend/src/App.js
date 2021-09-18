@@ -94,10 +94,10 @@ function App() {
         <Route exact path="/" component={Dashboard}/>
         <Route exact path="/login" component={Login}/>
         <Route exact path="/register" component={Register}/>
-        <Route exact path="/movies" component={() => <Movies props={fetchUserDetails}/>}/>
-        <Route exact path="/profiles" component={Profiles}/>
+        <Route exact path="/movies" component={() => <Movies props={fetchUserDetails}/>} onEnter={() => fetchUserDetails}/>
+        <Route exact path="/profiles" component={Profiles} onEnter={() => fetchUserDetails}/>
         //<Route path="/profile/:userId" component={Profile}/>
-        <Route path="/profile" component={Profile}/>
+        <Route path="/profile" component={Profile} onEnter={() => fetchUserDetails}/>
         <Route path="/logout" component={Logout}/>
       </Switch>
       <Footer/>

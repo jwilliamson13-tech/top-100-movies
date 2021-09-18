@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect} from "react";
+import React, { useState, useContext, useEffect, useCallback} from "react";
 import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
@@ -30,8 +30,6 @@ const MovieCard = props => {
         setRankInput("<div className=\"col-sm-5\"><input type=\"text\" className=\"form-control\" placeholder=\"Rank\" value={rank} onChange={onChangeRank}></input></div>");
       }
     }, []);
-
-
 
   function isNumeric(str) {
     if (typeof str != "string"){
@@ -78,6 +76,7 @@ const MovieCard = props => {
           if(data.success){
             setMovieAdded(true);
             setButtonText("Delete Movie");
+            //fetchUserDetails();
             //This had an antiquated setRank, but for some reason, the 3rd setState here would not re-render. So whatever was 3rd was left out of the frontend so to speak. This is where the movie added "bug" came in.
           }
         }
@@ -89,7 +88,39 @@ const MovieCard = props => {
   }
 
   function deleteMovie(){
+    var errorMessage = "Error deleting movie. Please try again later.";
     console.log("DELETING");
+    fetch(process.env.REACT_APP_API_ENDPOINT+ "api/v1/movies", {
+      method: "DELETE",
+      credentials: "include",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({id:userContext.details._id,movie:props.movie.currentMovie})
+    })
+    .then(async response => {
+      if(!response.ok){
+        if(response.status === 400){
+          setError("Error");
+        }
+        else if(response.status === 401){
+          setError("Not signed in. Please sign in to add movies.");
+        }
+        else {
+          setError(errorMessage);
+        }
+      }
+      else{
+        const data = await response.json();
+        if(data.success){
+          setMovieAdded(false);
+          setButtonText("Add Movie");
+          //fetchUserDetails();
+          //This had an antiquated setRank, but for some reason, the 3rd setState here would not re-render. So whatever was 3rd was left out of the frontend so to speak. This is where the movie added "bug" came in.
+        }
+      }
+    })
+    .catch(e =>{
+      setError(errorMessage);
+    })
   }
 
   function buttonController(){

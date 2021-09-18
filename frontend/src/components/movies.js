@@ -45,7 +45,7 @@ const Movies = props => {
   });
 
   useEffect(() => {
-    fetchUserDetails();
+    //fetchUserDetails();
   },[]);
 
 
@@ -62,7 +62,7 @@ const Movies = props => {
       MoviesDataService.getMovies(searchName)
       .then(response => {
         console.log(userContext.details.favorite_movies);
-        if(Object.entries(userContext.details.favorite_movies).length > 1){
+        if(Object.entries(userContext.details.favorite_movies).length >= 1){
           console.log("JUST SET USER MOVIES ARRAY");
           setUserMoviesArray(Object.entries(userContext.details.favorite_movies));
           console.log("USER MOVIES ARRAY RIGHT AFTER SET: ", userMoviesArray);

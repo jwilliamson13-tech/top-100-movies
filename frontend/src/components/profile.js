@@ -16,31 +16,76 @@ const Profile = props => {
 
   var accessToken;
 
+
+  function topThreeMovies(){
+    console.log("FAV MOVIES");
+    console.log(userContext.details.favorite_movies);
+    if(Object.entries(userContext.details.favorite_movies).length > 0){
+      var movieRanks = Object.keys(userContext.details.favorite_movies);
+      var topThreeMoviesArray = [];
+      for(var i = 0; i < Math.min(movieRanks.length,3); i++){
+        var currentMovie = userContext.details.favorite_movies[movieRanks[i]];
+        //Make a movie card for each and push
+        var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
+
+          topThreeMoviesArray.push(<MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":true}}/>);
+
+        //topThreeMoviesArray.push(userContext.details.favorite_movies[movieRanks[i]]);
+      }
+      //var sortedFavMovies = new Map([...userContext.details.favorite_movies].sort());
+      console.log(topThreeMoviesArray);
+
+      return(topThreeMoviesArray);
+    }
+  }
+
+  function topOneHundredMovies(){
+    if(Object.entries(userContext.details.favorite_movies).length > 0){
+      var movieRanks = Object.keys(userContext.details.favorite_movies);
+      var favoriteMovies = [];
+      for(var i = 0; i < movieRanks.length; i++){
+        var currentMovie = userContext.details.favorite_movies[movieRanks[i]];
+        //Make a movie card for each and push
+        var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
+
+          favoriteMovies.push(<MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":true}}/>);
+
+        //topThreeMoviesArray.push(userContext.details.favorite_movies[movieRanks[i]]);
+      }
+      //var sortedFavMovies = new Map([...userContext.details.favorite_movies].sort());
+      console.log(favoriteMovies);
+
+      return(favoriteMovies);
+    }
+  }
+
   return userContext.details == null ? (
     <div className="container mt-3">
       <div className="alert alert-danger">Error Finding User Details</div>
     </div>) :
     (
       <div className="container mt-3">
-      {console.log(userContext.details)}
         <div className="row">
           <div className="col-lg-4">
             <h1>Email: {userContext.details.email}</h1>
-            <h3>Movies Favorited: {userContext.details.favorite_movies.length}</h3>
+            <h3>Movies Favorited: {Object.entries(userContext.details.favorite_movies).length}</h3>
             <button className="btn btn-primary text-center" type="button">Follow</button>
           </div>
           <div className="col-lg-8 align-self-center">
             <h3 className="text-center">Top 3 Movies</h3>
-            <MovieCard movie={{"name":"Toy Story","description":"Girls are mean. I don't know what you expected","image":"https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.3hjDZEpqqvZeK_oVfbkh-gHaMx%26pid%3DApi&f=1"}}/>
+            <div className="row pt-3">
+              {
+                topThreeMovies()
+              }
+            </div>
           </div>
         </div>
         <div className="row pt-3">
           <h3 className="text-center">Top 100 Movies</h3>
+          {
+            topOneHundredMovies()
+          }
           <div className="row pt-3 pb-3 justify-content-center">
-
-            <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/fXm3YKXAEjx7d2tIWDg9TfRZtsU.jpg"}}/>
-            <MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy things on this wild adventure. Be prepared to be scared because the neighbor kid is crazy, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://image.tmdb.org/t/p/w185/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg"}}/>
-            <MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/xj3jhyq3ZsfdVn79kXC1XKFVQlv.jpg"}}/>
           </div>
         </div>
       </div>
