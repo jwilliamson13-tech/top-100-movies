@@ -94,7 +94,7 @@ function App() {
         <Route exact path="/" component={Dashboard}/>
         <Route exact path="/login" component={Login}/>
         <Route exact path="/register" component={Register}/>
-        <Route exact path="/movies" component={Movies}/>
+        <Route exact path="/movies" component={() => <Movies props={fetchUserDetails}/>}/>
         <Route exact path="/profiles" component={Profiles}/>
         //<Route path="/profile/:userId" component={Profile}/>
         <Route path="/profile" component={Profile}/>

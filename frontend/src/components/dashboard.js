@@ -29,7 +29,6 @@ const Dashboard = props => {
           <Link className="btn btn-primary" to="/register">Register</Link>
         </div>
       </div>
-
     </div>
   );
 };

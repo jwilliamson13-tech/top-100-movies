@@ -1,28 +1,55 @@
-import React, { useState,useEffect, useContext } from "react";
+import React, { useState,useEffect, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import MovieCard from "../components/movieCard";
 import MoviesDataService from "../services/dataService";
 import { UserContext } from "../context/UserContext";
 
 const Movies = props => {
+  console.log("RELOADING UP TOP");
   const [userContext, setUserContext] = useContext(UserContext);
+  const [oldUserContext, setOldUserContext] = useState("");
   const [movies, setMovies] = useState([]);
+  const [userMoviesArray, setUserMoviesArray] = useState([]);
   const [searchName, setSearchName ] = useState("");
+  const [loadedUser, setLoadedUser ] = useState(false);
 
-  var userMoviesArray;
+  //Add this to anywhere you need the user's details
+  const fetchUserDetails = useCallback(() => {
+    fetch(process.env.REACT_APP_API_ENDPOINT +"users/user", {
+      method:"GET",
+      credentials:"include",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${userContext.token}`
+      }
+    })
+    .then(async response =>{
+      if(response.ok){
+        const data = await response.json();
+        setUserContext(oldUserValues => {
+          return {...oldUserValues, details:data};
+        });
+      }
+      else{
+        if(response.status === 401){
+          console.log("RIP");
+          //window.location.reload()
+        }
+        else{
+          setUserContext(oldUserValues => {
+            return {...oldUserValues, details:null};
+          });
+        }
+      }
+    })
+  });
 
-  if(Object.entries(userContext.details.favorite_movies) < 1){
-    userMoviesArray = false;
-  }
-  else{
-    userMoviesArray = Object.entries(userContext.details.favorite_movies);
-  }
+  useEffect(() => {
+    fetchUserDetails();
+  },[]);
 
 
 
-  useEffect(()=>{
-      console.log(userContext);
-    }, []);
 
 
   const onChangeSearchName = e => {
@@ -34,9 +61,14 @@ const Movies = props => {
       console.log(searchName);
       MoviesDataService.getMovies(searchName)
       .then(response => {
-        console.log(response.data.data.results);
+        console.log(userContext.details.favorite_movies);
+        if(Object.entries(userContext.details.favorite_movies).length > 1){
+          console.log("JUST SET USER MOVIES ARRAY");
+          setUserMoviesArray(Object.entries(userContext.details.favorite_movies));
+          console.log("USER MOVIES ARRAY RIGHT AFTER SET: ", userMoviesArray);
+        }
         setMovies(response.data.data.results); //Gonna have to change this to match data received
-        console.log(movies);
+        console.log("AFTER SETTING MOVIES");
       })
     };
 
@@ -78,15 +110,17 @@ const Movies = props => {
       <div className="row pt-3 pb-3 justify-content-center">
           {
             movies.map(currentMovie => {
+              console.log("TOP OF MOVIES MAP");
               var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
               var movieAlreadyAdded;
+              console.log("USER MOVIES ARRAY:", userMoviesArray);
               //Determine if movie is already added
-              if(!userMoviesArray){
+              if(userMoviesArray.length < 1){
                 movieAlreadyAdded = false;
               }
               else{
                 //movieAlreadyAdded = false;
-                console.log(userMoviesArray);
+                console.log("USER MOVIES ARRAY IN BODY:", userMoviesArray);
                 for(var i = 0; i < userMoviesArray.length; i++){
                   if(areSameMovie(currentMovie,userMoviesArray[i][1])){
                     movieAlreadyAdded = true;
@@ -114,9 +148,4 @@ const Movies = props => {
   );
 };
 
-//{movies.map((movies) =>{
-//<MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/fXm3YKXAEjx7d2tIWDg9TfRZtsU.jpg"}}/>
-//<MovieCard movie={{"name":"Toy Story","description":"Toys do some crazy shit on this wild ass adventure. Be prepared to be scared because the neighbor kid is batshit, and you'll think your own toys may come to life to kill you one day. Pick up your phobia of dolls and toys with eyes now!!!","image":"https://image.tmdb.org/t/p/w185/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg"}}/>
-//<MovieCard movie={{"name":"Mean Girls","description":"Girls are mean. I don't know what you expected.","image":"https://image.tmdb.org/t/p/w185/xj3jhyq3ZsfdVn79kXC1XKFVQlv.jpg"}}/>
-//}};
 export default Movies;

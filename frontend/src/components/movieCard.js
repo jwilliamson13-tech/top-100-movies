@@ -11,8 +11,9 @@ const MovieCard = props => {
   const [error, setError] = useState("");
   const [buttonText, setButtonText] = useState("");
   const [rankInput, setRankInput] = useState("");
+  const [movieAdded, setMovieAdded] = useState(props.movie.movieAlreadyAdded);
   var errorMessage = "Error with movies. Please try again later.";
-  var movieAdded = props.movie.movieAlreadyAdded;
+  //var movieAdded = props.movie.movieAlreadyAdded;
 
   useEffect(()=>{
       //Get User Details
@@ -20,7 +21,6 @@ const MovieCard = props => {
       //Redirect if not logged in
 
       //Set the state of the button based on movie added or not
-      console.log(props.movie.movieAlreadyAdded);
       if(props.movie.movieAlreadyAdded){
         setButtonText("Delete Movie");
         setRankInput("");
@@ -42,24 +42,19 @@ const MovieCard = props => {
 
   const onChangeRank = e => {
       var newRank = e.target.value;
-      console.log(newRank);
       if((newRank > 100 || newRank < 1) && newRank){
         newRank = "";
       }
       if(!isNumeric(rank) && rank){
         newRank = "";
       }
-      console.log(typeof(newRank));
-      console.log(newRank);
       setRank(newRank);
   };
 
   function addMovie(){
     var errorMessage = "Error with movies. Please try again later.";
-    console.log(rank <= 100 && rank >= 1  && rank && userContext.details._id);
     //Check if rank is within range and not null and user id
     if(rank <= 100 && rank >= 1 && rank && userContext.details._id){
-      console.log("ABOUT TO FETCH");
       fetch(process.env.REACT_APP_API_ENDPOINT+ "api/v1/movies", {
         method: "POST",
         credentials: "include",
@@ -81,10 +76,9 @@ const MovieCard = props => {
         else{
           const data = await response.json();
           if(data.success){
-            setRank("");
+            setMovieAdded(true);
             setButtonText("Delete Movie");
-
-            movieAdded = true;
+            //This had an antiquated setRank, but for some reason, the 3rd setState here would not re-render. So whatever was 3rd was left out of the frontend so to speak. This is where the movie added "bug" came in.
           }
         }
       })
@@ -130,8 +124,13 @@ const MovieCard = props => {
         <h5 className="card-title">{props.movie.currentMovie.original_title}</h5>
         <p className="card-text">{props.movie.currentMovie.overview}</p>
         <div className="row">
-
-          <div dangerouslySetInnerHTML={{_html: rankInput}}></div>
+        {console.log("Movie Added: ", movieAdded)}
+        {
+          !movieAdded ? (<div className="col-sm-5">
+            <input type="text" className="form-control" placeholder="Rank" value={rank} onChange={onChangeRank}></input>
+          </div>)
+          : (<div></div>)
+        }
 
 
         <div className="col-sm-7">
