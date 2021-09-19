@@ -25,6 +25,7 @@ const Profiles = props => {
     };
 
   const retrieveUser = (searchName) => {
+    //Do this to reset currentFilter
     if(searchName.length == 0){
       retrieveUsers();
     }
@@ -33,6 +34,13 @@ const Profiles = props => {
       setProfiles(filteredUsers);
     }
   };
+
+  //Setup search bar working on enter press
+  function keyHandler(e){
+    if(e.code == "Enter"){
+      retrieveUser(searchName);
+    }
+  }
 
   return (
     <div className="container pr-5 pl-5">
@@ -45,6 +53,7 @@ const Profiles = props => {
             placeholder="Search by name"
             value={searchName}
             onChange={onChangeSearchName}
+            onKeyUp={keyHandler}
           />
           <div className="input-group-append">
             <button

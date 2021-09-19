@@ -41,8 +41,8 @@ function App() {
         });
         console.log(userContext);
       }
-
-      setTimeout(verifyUser, 5 * 60 * 1000);
+      //Need to find a more elegant solution because this will interrupt whatever the user is doing to refresh
+      setTimeout(verifyUser, 59 * 60 * 1000);
     })
   }, [setUserContext]);
 
@@ -71,6 +71,7 @@ function App() {
       else{
         if(response.status === 401){
           console.log("RIP");
+          console.log("THIS ERROR IS BROUGHT TO YOU BY APP JS");
           //window.location.reload()
         }
         else{
@@ -117,13 +118,6 @@ function App() {
     console.log(userContext.details);
   }, [userContext.details, fetchUserDetails]);
 
-  useEffect(()=>{
-    if (!profileContext) {
-      fetchProfileDetails()
-    }
-    console.log(profileContext);
-  }, [profileContext, fetchProfileDetails]);
-
 
 
   return (
@@ -134,8 +128,8 @@ function App() {
         <Route exact path="/login" component={Login}/>
         <Route exact path="/register" component={Register}/>
         <Route exact path="/movies" component={() => <Movies props={fetchUserDetails}/>} onEnter={() => fetchUserDetails}/>
+        <Route exact path="/profile/:userId" component={OtherProfile} onEnter={() => fetchUserDetails}/>
         <Route exact path="/profiles" component={Profiles} onEnter={() => fetchUserDetails}/>
-        <Route path="/profile/:userId" component={OtherProfile} onEnter={() => fetchUserDetails}/>
         <Route path="/profile" component={Profile} onEnter={() => fetchUserDetails}/>
         <Route path="/logout" component={Logout}/>
       </Switch>

@@ -45,17 +45,20 @@ const Dashboard = props => {
           if(response.ok){
             const data = await response.json();
             if(Object.entries(data.favorite_movies).length > 0){
-              var movieRanks = Object.keys(data.favorite_movies).sort();
+              var movieRanks = Object.keys(data.favorite_movies);
+              var movieCount = 0;
 
               for(var i = 0; i < Math.min(movieRanks.length,3); i++){
                 var currentMovie = data.favorite_movies[movieRanks[i]];
+                console.log(currentMovie);
                 //Make a movie card for each and push
                 var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
-
                 followsMovies.push(<MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":movieInUserFavorites(currentMovie.id)}}/>);
               }
             }
-
+            console.log("FOLLOWS MOVIES");
+            console.log(followsMovies);
+            return(followsMovies[0]);
           }
           else{
             if(response.status === 401){
@@ -65,9 +68,6 @@ const Dashboard = props => {
           }
         })
       }
-      console.log("FOLLOWS MOVIES");
-      console.log(followsMovies);
-      return(followsMovies);
     }
   }
 
@@ -97,10 +97,10 @@ const Dashboard = props => {
         :
         (
           <div className="row">
-          <p>test</p>
-          {
-            console.log(showFollowerMovies())
-          }
+            <h3 className="text-center">People You Follow Like These Movies</h3>
+            {
+              showFollowerMovies()
+            }
           </div>
         )
       }

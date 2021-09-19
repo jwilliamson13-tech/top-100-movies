@@ -22,14 +22,41 @@ const OtherProfile = props => {
 
   var accessToken;
 
+
+  //Add this to anywhere you need the user's details
+  const fetchUserDetails = useCallback(() => {
+    fetch(process.env.REACT_APP_API_ENDPOINT +"users/user", {
+      method:"GET",
+      credentials:"include",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${userContext.token}`
+      }
+    })
+    .then(async response =>{
+      if(response.ok){
+        const data = await response.json();
+        setUserContext(oldUserValues => {
+          return {...oldUserValues, details:data};
+        });
+      }
+      else{
+        if(response.status === 401){
+          console.log("RIP");
+          console.log("THIS ERROR IS BROUGHT TO YOU BY APP JS");
+          //window.location.reload()
+        }
+        else{
+          setUserContext(oldUserValues => {
+            return {...oldUserValues, details:null};
+          });
+        }
+      }
+    })
+  }, [setUserContext, userContext.token]);
+
   useEffect(() => {
-    //Find if user already follows this profile
-    if(userContext.details.following.includes(userId)){
-      setButtonText("Unfollow");
-    }
-    else{
-      setButtonText("Follow")
-    }
+
     //Get profile info for page population
     fetch(process.env.REACT_APP_API_ENDPOINT +"users/"+userId, {
       method:"GET",
@@ -55,7 +82,17 @@ const OtherProfile = props => {
         }
       }
     })
-  },[]);
+
+    //Find if user already follows this profile
+    if(userContext.details){
+      if(userContext.details.following.includes(userId)){
+        setButtonText("Unfollow");
+      }
+      else{
+        setButtonText("Follow")
+      }
+    }
+  },[userContext]);
 
   function follow(){
     var errorMessage = "Error with user system. Please try again later.";
@@ -158,6 +195,7 @@ const OtherProfile = props => {
       var favoriteMovies = [];
       for(var i = 0; i < movieRanks.length; i++){
         var currentMovie = profile.favorite_movies[movieRanks[i]];
+        console.log(currentMovie);
         //Make a movie card for each and push
         var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
 
@@ -172,7 +210,7 @@ const OtherProfile = props => {
     }
   }
 
-  return profile == null ? (
+  return (profile == null || !userContext.details) ? (
     <div className="container mt-3">
       <h1>LOADING...</h1>
     </div>) :

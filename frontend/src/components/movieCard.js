@@ -13,13 +13,15 @@ const MovieCard = props => {
   const [rankInput, setRankInput] = useState("");
   const [movieAdded, setMovieAdded] = useState(props.movie.movieAlreadyAdded);
   var errorMessage = "Error with movies. Please try again later.";
-  //var movieAdded = props.movie.movieAlreadyAdded;
+  console.log("IM A CARD")
+;  //var movieAdded = props.movie.movieAlreadyAdded;
 
   useEffect(()=>{
       //Get User Details
 
       //Redirect if not logged in
-
+      //console.log("MOVIE ADDED?");
+      //console.log(props.movie.movieAlreadyAdded);
       //Set the state of the button based on movie added or not
       if(props.movie.movieAlreadyAdded){
         setButtonText("Delete Movie");
@@ -29,7 +31,7 @@ const MovieCard = props => {
         setButtonText("Add Movie");
         setRankInput("<div className=\"col-sm-5\"><input type=\"text\" className=\"form-control\" placeholder=\"Rank\" value={rank} onChange={onChangeRank}></input></div>");
       }
-    }, []);
+    }, [props.movie.movieAlreadyAdded]);
 
   function isNumeric(str) {
     if (typeof str != "string"){

@@ -5,7 +5,6 @@ import MoviesDataService from "../services/dataService";
 import { UserContext } from "../context/UserContext";
 
 const Movies = props => {
-  console.log("RELOADING UP TOP");
   const [userContext, setUserContext] = useContext(UserContext);
   const [oldUserContext, setOldUserContext] = useState("");
   const [movies, setMovies] = useState([]);
@@ -58,17 +57,12 @@ const Movies = props => {
   };
 
   const retrieveMovies = (searchName) => {
-      console.log(searchName);
       MoviesDataService.getMovies(searchName)
       .then(response => {
-        console.log(userContext.details.favorite_movies);
         if(Object.entries(userContext.details.favorite_movies).length >= 1){
-          console.log("JUST SET USER MOVIES ARRAY");
           setUserMoviesArray(Object.entries(userContext.details.favorite_movies));
-          console.log("USER MOVIES ARRAY RIGHT AFTER SET: ", userMoviesArray);
         }
         setMovies(response.data.data.results); //Gonna have to change this to match data received
-        console.log("AFTER SETTING MOVIES");
       })
     };
 
@@ -79,6 +73,13 @@ const Movies = props => {
       }
       else{
         return false;
+      }
+    }
+
+    //Setup search bar working on enter press
+    function keyHandler(e){
+      if(e.code == "Enter"){
+        retrieveMovies(searchName);
       }
     }
 
@@ -94,6 +95,7 @@ const Movies = props => {
             placeholder="Search by name"
             value={searchName}
             onChange={onChangeSearchName}
+            onKeyUp={keyHandler}
           />
           <div className="input-group-append">
             <button
@@ -110,17 +112,14 @@ const Movies = props => {
       <div className="row pt-3 pb-3 justify-content-center">
           {
             movies.map(currentMovie => {
-              console.log("TOP OF MOVIES MAP");
               var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
               var movieAlreadyAdded;
-              console.log("USER MOVIES ARRAY:", userMoviesArray);
               //Determine if movie is already added
               if(userMoviesArray.length < 1){
                 movieAlreadyAdded = false;
               }
               else{
                 //movieAlreadyAdded = false;
-                console.log("USER MOVIES ARRAY IN BODY:", userMoviesArray);
                 for(var i = 0; i < userMoviesArray.length; i++){
                   if(areSameMovie(currentMovie,userMoviesArray[i][1])){
                     movieAlreadyAdded = true;
