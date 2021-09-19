@@ -61,15 +61,18 @@ const Profiles = props => {
       <div className="row pt-3 pb-3 justify-content-center">
         {
           profiles.map(currentProfile => {
+            console.log("PROFILE");
+            console.log(currentProfile.favorite_movies);
             var favorite_movie = "";
-            if(currentProfile.favorite_movies.length > 0){
-              favorite_movie = currentProfile.favorite_movies[0].original_title //Have to change this if using a map
+            if(Object.entries(currentProfile.favorite_movies).length > 0){
+              var movieKeys = Object.keys(currentProfile.favorite_movies).sort();
+              favorite_movie = currentProfile.favorite_movies[movieKeys[0]].original_title //Have to change this if using a map
             }
             else{
               favorite_movie = "NONE"
             }
             return(
-              <ProfileCard profile={{"email":currentProfile.email, "favorite_movies_length":currentProfile.favorite_movies.length, "favorite_movie":favorite_movie, "_id":currentProfile._id}}/>
+              <ProfileCard profile={{"email":currentProfile.email, "favorite_movies_length":Object.entries(currentProfile.favorite_movies).length, "favorite_movie":favorite_movie, "_id":currentProfile._id}}/>
             )
           })
         }

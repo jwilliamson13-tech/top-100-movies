@@ -5,6 +5,7 @@ import DataService from "../services/userDataService";
 import AuthService from "../services/authService";
 import { useAuth0 } from "@auth0/auth0-react";
 import { UserContext } from "../context/UserContext";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const Profile = props => {
   const [userContext, setUserContext] = useContext(UserContext);
@@ -61,7 +62,7 @@ const Profile = props => {
 
   return userContext.details == null ? (
     <div className="container mt-3">
-      <div className="alert alert-danger">Error Finding User Details</div>
+      <div className="alert alert-danger">Please login to view your profile.</div>
     </div>) :
     (
       <div className="container mt-3">
@@ -69,7 +70,6 @@ const Profile = props => {
           <div className="col-lg-4">
             <h1>Email: {userContext.details.email}</h1>
             <h3>Movies Favorited: {Object.entries(userContext.details.favorite_movies).length}</h3>
-            <button className="btn btn-primary text-center" type="button">Follow</button>
           </div>
           <div className="col-lg-8 align-self-center">
             <h3 className="text-center">Top 3 Movies</h3>

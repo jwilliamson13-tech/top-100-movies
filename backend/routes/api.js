@@ -53,7 +53,7 @@ router.get('/',async (req,res) =>{
   console.log(req.oidc);
 });
 
-router.delete('/movies', jsonParser, async (req,res) => {
+router.delete('/movies', jsonParser, verifyUser, async (req,res) => {
   var {id, movie} = req.body;
 
   //Add checks for authentication and user id = id AND add in the authentication piece in the top beside json Parser
@@ -105,7 +105,7 @@ router.delete('/movies', jsonParser, async (req,res) => {
   });
 });
 
-router.post('/movies', jsonParser, async (req,res) => {
+router.post('/movies', jsonParser, verifyUser, async (req,res) => {
   var {id, movie, rank} = req.body;
 
   //Add checks for authentication and user id = id
@@ -166,6 +166,66 @@ router.post('/movies', jsonParser, async (req,res) => {
   }
   else {
     res.send({success: false, error: "Rank is an incorrect value."})
+  }
+});
+
+router.post('/follow', jsonParser, verifyUser, async(req,res) =>{
+  var {id, followId} = req.body;
+
+  User.findOne({"_id":id}, async (err, user) => {
+    if(err){
+      console.error("Error finding user: ", err);
+      res.status(500);
+      res.send({success: false, error: "User not found."});
+    }
+    else{
+      var currentFollowing = user.following;
+      currentFollowing.push(followId);
+
+
+      //Update user
+      const updatedUser = await User.findOneAndUpdate({"_id":id},{'$set': {"following":currentFollowing}},{'new':true});
+
+      //Check to see if new movie was added (this helps return errors)
+      if(updatedUser.following.length == currentFollowing.length){
+        res.send({success:true});
+      }
+      else{
+        res.send({success:false, error: "Error updating followers."});
+      }
+    }
+  });
+});
+
+router.post('/unfollow', jsonParser, verifyUser, async(req,res) =>{
+  if(true){
+    var {id, followId} = req.body;
+
+    User.findOne({"_id":id}, async (err, user) => {
+      if(err){
+        console.error("Error finding user: ", err);
+        res.status(500);
+        res.send({success: false, error: "User not found."});
+      }
+      else{
+        var currentFollowing = user.following;
+        var followIndex = currentFollowing.indexOf(followId);
+        if(followIndex > -1){
+          currentFollowing.splice(followIndex,1);
+        }
+
+        //Update user
+        const updatedUser = await User.findOneAndUpdate({"_id":id},{'$set': {"following":currentFollowing}},{'new':true});
+
+        //Check to see if new movie was added (this helps return errors)
+        if(updatedUser.following.length == currentFollowing.length){
+          res.send({success:true});
+        }
+        else{
+          res.send({success:false, error: "Error updating followers."});
+        }
+      }
+    });
   }
 });
 

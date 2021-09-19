@@ -252,6 +252,13 @@ router.post("/", jsonParser, async (req,res) => {
   console.log("END OF POST");
 });
 
+router.get('/:id', async (req,res) => {
+
+  const userId = req.params.id;
+
+  const user = await userDAO.getUser(userId);
+  res.send(user);
+});
 
 /*
 //Returning Auth

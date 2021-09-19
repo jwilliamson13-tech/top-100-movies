@@ -56,7 +56,7 @@ const MovieCard = props => {
       fetch(process.env.REACT_APP_API_ENDPOINT+ "api/v1/movies", {
         method: "POST",
         credentials: "include",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json", Authorization: `Bearer ${userContext.token}`},
         body: JSON.stringify({id:userContext.details._id,movie:props.movie.currentMovie,rank:rank})
       })
       .then(async response => {
@@ -93,7 +93,7 @@ const MovieCard = props => {
     fetch(process.env.REACT_APP_API_ENDPOINT+ "api/v1/movies", {
       method: "DELETE",
       credentials: "include",
-      headers:{"Content-Type":"application/json"},
+      headers:{"Content-Type":"application/json", Authorization: `Bearer ${userContext.token}`},
       body: JSON.stringify({id:userContext.details._id,movie:props.movie.currentMovie})
     })
     .then(async response => {
@@ -155,7 +155,6 @@ const MovieCard = props => {
         <h5 className="card-title">{props.movie.currentMovie.original_title}</h5>
         <p className="card-text">{props.movie.currentMovie.overview}</p>
         <div className="row">
-        {console.log("Movie Added: ", movieAdded)}
         {
           !movieAdded ? (<div className="col-sm-5">
             <input type="text" className="form-control" placeholder="Rank" value={rank} onChange={onChangeRank}></input>
