@@ -11,6 +11,7 @@ const Movies = props => {
   const [userMoviesArray, setUserMoviesArray] = useState([]);
   const [searchName, setSearchName ] = useState("");
   const [loadedUser, setLoadedUser ] = useState(false);
+  const [isLoading, setIsLoading] = useState();
 
   //Add this to anywhere you need the user's details
   const fetchUserDetails = useCallback(() => {
@@ -57,12 +58,14 @@ const Movies = props => {
   };
 
   const retrieveMovies = (searchName) => {
+      setIsLoading(true);
       MoviesDataService.getMovies(searchName)
       .then(response => {
         if(Object.entries(userContext.details.favorite_movies).length >= 1){
           setUserMoviesArray(Object.entries(userContext.details.favorite_movies));
         }
         setMovies(response.data.data.results); //Gonna have to change this to match data received
+        setIsLoading(false);
       })
     };
 
@@ -111,36 +114,42 @@ const Movies = props => {
       </div>
       <div className="row pt-3 pb-3 justify-content-center">
           {
-            movies.map(currentMovie => {
-              var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
-              var movieAlreadyAdded;
-              //Determine if movie is already added
-              if(userMoviesArray.length < 1){
-                movieAlreadyAdded = false;
-              }
-              else{
-                //movieAlreadyAdded = false;
-                for(var i = 0; i < userMoviesArray.length; i++){
-                  if(areSameMovie(currentMovie,userMoviesArray[i][1])){
-                    movieAlreadyAdded = true;
-                    break;
-                  }
-                  else{
-                    movieAlreadyAdded = false;
-                  }
+            isLoading ? (
+              <h1 className="text-center">LOADING MOVIES</h1>
+            )
+            :
+            (
+              movies.map(currentMovie => {
+                var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
+                var movieAlreadyAdded;
+                //Determine if movie is already added
+                if(userMoviesArray.length < 1){
+                  movieAlreadyAdded = false;
                 }
-                /*
-                console.log(currentMovie);
-                //console.log(userContext.details.favorite_movies);
-                console.log(Array.from(Object.entries(userContext.details.favorite_movies)));
-                movieAlreadyAdded = Array.from(Object.entries(userContext.details.favorite_movies)).includes(currentMovie);
-                */
-              }
+                else{
+                  //movieAlreadyAdded = false;
+                  for(var i = 0; i < userMoviesArray.length; i++){
+                    if(areSameMovie(currentMovie,userMoviesArray[i][1])){
+                      movieAlreadyAdded = true;
+                      break;
+                    }
+                    else{
+                      movieAlreadyAdded = false;
+                    }
+                  }
+                  /*
+                  console.log(currentMovie);
+                  //console.log(userContext.details.favorite_movies);
+                  console.log(Array.from(Object.entries(userContext.details.favorite_movies)));
+                  movieAlreadyAdded = Array.from(Object.entries(userContext.details.favorite_movies)).includes(currentMovie);
+                  */
+                }
 
-              return(
-                <MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":movieAlreadyAdded}}/>
-              )
-            })
+                return(
+                  <MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":movieAlreadyAdded}}/>
+                )
+              })
+            )
           }
       </div>
     </div>

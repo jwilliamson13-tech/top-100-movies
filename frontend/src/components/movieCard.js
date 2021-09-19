@@ -13,8 +13,7 @@ const MovieCard = props => {
   const [rankInput, setRankInput] = useState("");
   const [movieAdded, setMovieAdded] = useState(props.movie.movieAlreadyAdded);
   var errorMessage = "Error with movies. Please try again later.";
-  console.log("IM A CARD")
-;  //var movieAdded = props.movie.movieAlreadyAdded;
+  //var movieAdded = props.movie.movieAlreadyAdded;
 
   useEffect(()=>{
       //Get User Details
