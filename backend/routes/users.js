@@ -141,6 +141,28 @@ router.get('/', async (req,res) =>{
   res.send(users);
 });
 
+router.get('/following/movies', verifyUser, async (req,res) =>{
+    //Lookup followers
+    var following = req.user.following;
+    console.log(following);
+    var followingMovies = [];
+
+    for(var i = 0; i < following.length; i++) {
+      //Get the follower's top 3 movies
+      var followUser = await User.findOne({_id:following[i]}).exec();
+      if(followUser.favorite_movies.size > 0){
+        var movieRanks = Array.from(followUser.favorite_movies.keys());
+
+        for(var j = 0; j < Math.min(movieRanks.length,3); j++){
+          var currentMovie = followUser.favorite_movies.get(movieRanks[j]);
+          //Make a movie card for each and push
+          followingMovies.push(currentMovie);
+        }
+      }
+    }
+    res.send({"data":followingMovies})
+});
+
 router.post("/", jsonParser, async (req,res) => {
 
   var {email,password,password2} = req.body;

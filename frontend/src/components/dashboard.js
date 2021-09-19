@@ -24,7 +24,7 @@ const Dashboard = props => {
   }
 
 
-  function showFollowerMovies(){
+  function showFollowingMovies(){
     var followsMovies = [];
     if(userContext.details != null){
       //Get followers
@@ -48,17 +48,16 @@ const Dashboard = props => {
               var movieRanks = Object.keys(data.favorite_movies);
               var movieCount = 0;
 
-              for(var i = 0; i < Math.min(movieRanks.length,3); i++){
-                var currentMovie = data.favorite_movies[movieRanks[i]];
-                console.log(currentMovie);
+              for(var j = 0; j < Math.min(movieRanks.length,3); j++){
+                var currentMovie = data.favorite_movies[movieRanks[j]];
                 //Make a movie card for each and push
                 var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
                 followsMovies.push(<MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":movieInUserFavorites(currentMovie.id)}}/>);
               }
             }
             console.log("FOLLOWS MOVIES");
-            console.log(followsMovies);
-            return(followsMovies[0]);
+            console.log(Object.entries(followsMovies)[1][1]);
+            return(Object.entries(followsMovies)[1][1]);
           }
           else{
             if(response.status === 401){
@@ -71,8 +70,45 @@ const Dashboard = props => {
     }
   }
 
+  function followingMoviesShow(){
+    if(userContext.details != null){
+      //Look at top 3 movies from followers
+      fetch(process.env.REACT_APP_API_ENDPOINT +"users/following/movies", {
+        method:"GET",
+        credentials:"include",
+        headers: {
+          "Content-Type":"application/json",
+          Authorization: `Bearer ${userContext.token}`
+        }
+      })
+      .then(async response =>{
+        if(response.ok){
+          const data = await response.json();
+          console.log("DATA");
+          console.log(data.data);
+          setFollowingMovies(data.data);
+        }
+      })
+    }
+  }
 
+  //Write a function to compare movies ID
+  function areSameMovie(firstMovie, secondMovie){
+    if(firstMovie.id == secondMovie.id){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 
+  useEffect(() =>{
+    console.log("CONTEXT");
+    console.log(userContext);
+    if(userContext){
+      followingMoviesShow()
+    }
+  },[userContext])
 
   return (
     <div className="contianer-fluid rounded">
@@ -96,10 +132,39 @@ const Dashboard = props => {
         )
         :
         (
-          <div className="row">
+          <div className="row mt-3">
             <h3 className="text-center">People You Follow Like These Movies</h3>
             {
-              showFollowerMovies()
+              followingMovies.map(currentMovie => {
+                var movieImage = currentMovie.poster_path ? "https://image.tmdb.org/t/p/w185/" + currentMovie.poster_path : "./NoMovieImage.jpg"
+                var movieAlreadyAdded;
+                //Determine if movie is already added
+                if(Object.entries(userContext.details.favorite_movies).length < 1){
+                  movieAlreadyAdded = false;
+                }
+                else{
+                  //movieAlreadyAdded = false;
+                  for(var i = 0; i < Object.entries(userContext.details.favorite_movies).length; i++){
+                    if(areSameMovie(currentMovie,Object.entries(userContext.details.favorite_movies)[i][1])){
+                      movieAlreadyAdded = true;
+                      break;
+                    }
+                    else{
+                      movieAlreadyAdded = false;
+                    }
+                  }
+                  /*
+                  console.log(currentMovie);
+                  //console.log(userContext.details.favorite_movies);
+                  console.log(Array.from(Object.entries(userContext.details.favorite_movies)));
+                  movieAlreadyAdded = Array.from(Object.entries(userContext.details.favorite_movies)).includes(currentMovie);
+                  */
+                }
+
+                return(
+                  <MovieCard movie={{currentMovie,"image":movieImage,"movieAlreadyAdded":movieAlreadyAdded}}/>
+                )
+              })
             }
           </div>
         )
